@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Information Form</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        /* Styles for the Navbar */
+  .navbar {
+      background-color: #131313;
+      color: #fff;
+      padding: 20px 40px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1000;
+  }
+  
+  .company-logo h3 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fbfbfa;
+      transition: color 0.3s ease;
+  }
+  
+  .nav-links {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+  }
+  
+  .nav-links li {
+      margin-right: 30px;
+      position: relative;
+  }
+  
+  .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      font-weight: 500;
+      transition: color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .nav-links a:hover {
+      color: #ffcc00;
+      transform: scale(1.05);
+  }
+  
+  .social-icons img {
+      width: 35px;
+      height: auto;
+      margin-left: 20px;
+      transition: transform 0.3s ease;
+  }
+  
+  .social-icons img:hover {
+      transform: scale(1.2);
+  }
+  
+  .mobile-menu-icon {
+      background-color: #131313;
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #fff;
+      transition: color 0.3s ease;
+  }
+  
+  .mobile-menu-icon:hover {
+      color: #ffcc00;
+  }
+  
+  @media screen and (max-width: 768px) {
+      .nav-links {
+          display: none;
+          position: absolute;
+          top: 70px;
+          left: 0;
+          width: 100%;
+          background-color: #282828;
+          flex-direction: column;
+          padding: 15px 0;
+          z-index: 1;
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+          opacity: 0;
+          transform: translateY(-20px);
+          transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      .social-icons{
+        display: none;
+      }
+  
+      .nav-links.nav-active {
+          display: flex;
+          opacity: 1;
+          transform: translateY(0);
+      }
+  
+      .nav-links li {
+          margin: 15px 0;
+      }
+  
+      .mobile-menu-icon {
+          display: block;
+      }
+  }
+  
+  /* Form Styles */
+  .heading {
+      text-align: center;
+      margin: 50px 0;
+      animation: fadeIn 1s ease-out;
+  }
+  
+  .heading h2 {
+      font-size: 2.5rem;
+      color: #131313;
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+  }
+  
+  .heading h2:hover {
+      color: #2c05c8;
+  }
+  
+  .main_content {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px;
+      border-radius: 15px;
+      background-color: #fff;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      animation: slideUp 0.6s ease-out;
+  }
+  
+  label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: #333;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  select {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      box-sizing: border-box;
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus,
+  select:focus {
+      border-color: #ffcc00;
+      box-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
+      outline: none;
+  }
+  
+  input[type="submit"] {
+      background-color: #131313;
+      color: #fff;
+      padding: 14px 25px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  input[type="submit"]:hover {
+      background-color: #ffcc00;
+      color: #131313;
+      transform: scale(1.05);
+  }
+  
+  /* Loading Spinner Styles */
+  /* Loading Spinner Styles */
+  .loading-spinner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeIn 0.5s ease-out;
+  }
+  
+  
+  .custom-alert {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+  }
+  
+  .custom-alert-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+  }
+  
+  .custom-alert-content span {
+      display: block;
+      font-size: 1.2rem;
+      color: #333;
+      margin-bottom: 20px;
+  }
+  
+  .custom-alert-close {
+      background-color: #131313;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease;
+  }
+  
+  .custom-alert-close:hover {
+      background-color: #ffcc00;
+      color: #131313;
+  }
+  
+  .spinner {
+      border: 8px solid transparent;
+      border-top: 8px solid #ffcc00;
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite, colorChange 1.5s linear infinite;
+  }
+  
+  @keyframes spin {
+      0% {
+          transform: rotate(0deg);
+      }
+      100% {
+          transform: rotate(360deg);
+      }
+  }
+  
+  @keyframes fadeIn {
+      from {
+          opacity: 0;
+      }
+      to {
+          opacity: 1;
+      }
+  }
+  
+  @keyframes slideUp {
+      from {
+          transform: translateY(20px);
+          opacity: 0;
+      }
+      to {
+          transform: translateY(0);
+          opacity: 1;
+      }
+  }
+  
+  @keyframes colorChange {
+      0% {
+          border-top-color: #ffcc00;
+      }
+      50% {
+          border-top-color: #ff6600;
+      }
+      100% {
+          border-top-color: #ffcc00;
+      }
+  }
+  
+      </style>
+</head>
+
+<body>
+
+    <!-- navbar.html -->
+    <nav class="navbar">
+        <div class="company-logo">
+            <h3>EmploKart</h3>
+        </div>
+        <ul class="nav-links">
+            <li><a href="homepage.html">Home</a></li>
+            <li><a href="#">Service</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Partner</a></li>
+        </ul>
+        <div class="social-icons">
+            <img src="img/social-media.png" alt="Insta">
+            <img src="img/twitter.png" alt="Twitter">
+            <img src="img/Youtube.png" alt="Youtube">
+        </div>
+        <div class="mobile-menu-icon">
+            <button><img src="img/menu.png" style="background-color: #131313" height="20px" alt=""></button>
+        </div>
+    </nav>
+
+    <div class="heading">
+        <h2>Worker Information Form</h2>
+    </div>
+
+    <div class="main_content">
+
+        <form id="workerForm" enctype="multipart/form-data">
+            <!-- Form fields here -->
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+
+            <label for="phone">Phone Number:</label><br>
+            <input type="tel" id="phone" name="phone" required><br><br>
+
+            <label for="locality">Locality:</label><br>
+            <input type="text" id="locality" name="locality" required><br><br>
+
+            <label for="gender">Gender:</label><br>
+            <select id="gender" name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select><br><br>
+
+            <label for="category">Category:</label><br>
+            <select id="category" name="category" required>
+                <option value="select">Select</option>
+                <option value="Electrician">Electrician</option>
+                <option value="Painter">Painter</option>
+                <option value="Plumber">Plumber</option>
+                <option value="Carpenter">Carpenter</option>
+                <option value="Mason">Mason</option>
+                <option value="Cleaner">Cleaner</option>
+                <option value="Gardener">Gardener</option>
+                <option value="Mechanic">Mechanic</option>
+                <option value="Beautician">Beautician</option>
+                <option value="Massagers">Massagers</option>
+                <option value="Handyman">Handyman</option>
+                <option value="salon">Salon</option>
+            </select><br><br>
+
+            <label for="Vehicle">Vehicle:</label><br>
+            <select id="Vehicle" name="Vehicle" required>
+                <option value="N/A">N/A</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select><br><br>
+
+            <label for="experience">Previous Experience:</label><br>
+            <select id="experience" name="experience" required>
+                <option value="select">Select</option>
+                <option value="1 year">1 year</option>
+                <option value="less than 1 year">less than 1 year</option>
+                <option value="3 year">3 year</option>
+                <option value="less than 3 year">less than 3 year</option>
+                <option value="5 year">5 year</option>
+                <option value="less than 5 year">less than 5 year</option>
+                <option value="greater than 5 year">greater than 5 year</option>
+            </select><br><br>
+
+            <label for="salary">Expected Salary:</label><br>
+            <select id="salary" name="salary" required>
+                <option value="select">Select</option>
+                <option value="Less than 50,000">Less than 50,000</option>
+                <option value="greater than 50,000">greater than 50,000</option>
+            </select><br><br>
+
+            <label for="faadhaar_image">Upload Front Aadhaar Card (Image):</label><br>
+            <input type="file" id="faadhaar_image" name="faadhaar_image" accept="image/*" required><br><br>
+
+            <label for="baadhaar_image">Upload Back Aadhaar Card (Image):</label><br>
+            <input type="file" id="baadhaar_image" name="baadhaar_image" accept="image/*" required><br><br>
+
+            <label for="worker_image">Worker Image:</label><br>
+            <input type="file" id="worker_image" name="worker_image" accept="image/*" required><br><br>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <div class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="custom-alert">
+        <div class="custom-alert-content">
+            <span></span>
+            <button class="custom-alert-close">Close</button>
+        </div>
+    </div>
+
+    <!-- script.js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.mobile-menu-icon').click(function () {
+                $('.nav-links').toggleClass('nav-active');
+            });
+        });
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        function showLoadingSpinner() {
+            const spinner = document.querySelector('.loading-spinner');
+            spinner.style.display = 'flex';
+        }
+    
+        function showCustomAlert(message) {
+            const alertBox = document.querySelector('.custom-alert');
+            const alertMessage = document.querySelector('.custom-alert-content span');
+            
+            alertMessage.innerText = message;
+            alertBox.style.display = 'flex';
+    
+            const spinner = document.querySelector('.loading-spinner');
+            spinner.style.display = 'none';
+        }
+    
+        var firebaseConfig = {
+            apiKey: "AIzaSyAZscu_AwlGlV5ukE-d7-QWPdZuvy6p1vY",
+            authDomain: "emplowork.firebaseapp.com",
+            databaseURL: "https://emplowork-default-rtdb.firebaseio.com",
+            projectId: "emplowork",
+            storageBucket: "emplowork.appspot.com",
+            messagingSenderId: "772648315891",
+            appId: "1:772648315891:web:ff16d5b8c8aa4b79b40086",
+            measurementId: "G-1G1X5RCVNY"
+        };
+    
+        firebase.initializeApp(firebaseConfig);
+    
+        var storage = firebase.storage();
+        var database = firebase.database();
+    
+        document.getElementById('workerForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+    
+            showLoadingSpinner();
+    
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var phone = document.getElementById('phone').value;
+            var gender = document.getElementById('gender').value;
+            var category = document.getElementById('category').value;
+            var Vehicle = document.getElementById('Vehicle').value;
+            var experience = document.getElementById('experience').value;
+            var locality = document.getElementById('locality').value;
+            var salary = document.getElementById('salary').value;
+    
+            var faadhaar_image = document.getElementById('faadhaar_image').files[0];
+            var baadhaar_image = document.getElementById('baadhaar_image').files[0];
+            var worker_image = document.getElementById('worker_image').files[0];
+    
+            var faadhaar_image_ref = storage.ref('aadhaar_images/' + faadhaar_image.name);
+            var baadhaar_image_ref = storage.ref('aadhaar_images/' + baadhaar_image.name);
+            var worker_image_ref = storage.ref('worker_images/' + worker_image.name);
+    
+            var faadhaar_upload = faadhaar_image_ref.put(faadhaar_image);
+            var baadhaar_upload = baadhaar_image_ref.put(baadhaar_image);
+            var worker_upload = worker_image_ref.put(worker_image);
+    
+            Promise.all([faadhaar_upload, baadhaar_upload, worker_upload])
+                .then(function (snapshots) {
+                    return Promise.all(snapshots.map(function (snapshot) {
+                        return snapshot.ref.getDownloadURL();
+                    }));
+                })
+                .then(function (urls) {
+                    var faadhaar_url = urls[0];
+                    var baadhaar_url = urls[1];
+                    var worker_url = urls[2];
+    
+                    var formData = {
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        gender: gender,
+                        category: category,
+                        Vehicle: Vehicle,
+                        experience: experience,
+                        locality: locality,
+                        salary: salary,
+                        faadhaar_image_url: faadhaar_url,
+                        baadhaar_image_url: baadhaar_url,
+                        worker_image_url: worker_url
+                    };
+    
+                    return database.ref('workers').push(formData);
+                })
+                .then(function () {
+                    showCustomAlert('Form submitted successfully!');
+                    document.getElementById('workerForm').reset();
+                })
+                .catch(function (error) {
+                    showCustomAlert('Error uploading files or saving data. Please try again.');
+                });
+    
+            document.querySelector('.custom-alert-close').addEventListener('click', function () {
+                document.querySelector('.custom-alert').style.display = 'none';
+            });
+        });
+    </script>
+    
+</body>
+
+</html>
